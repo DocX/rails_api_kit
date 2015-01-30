@@ -5,14 +5,16 @@
 #
 # Scope also mimics user methods to support partially
 # serializers relying on that scope == current_user
-class RailsApiKit::FieldsSerializationScope
-  attr_accessor :user, :serialize_fields, :fields_for, :options
+module RailsApiKit
+  class FieldsSerializationScope
+    attr_accessor :user, :serialize_fields, :fields_for, :options
 
-  def method_missing(name, *args, &block)
-    if user.respond_to? name
-      user.send(name, *args, &block)
-    else
-      raise NoMethodError.new ("Undefined method '#{name}' for user in UserWithFieldsScope")
+    def method_missing(name, *args, &block)
+      if user.respond_to? name
+        user.send(name, *args, &block)
+      else
+        raise NoMethodError.new ("Undefined method '#{name}' for user in UserWithFieldsScope")
+      end
     end
   end
 end

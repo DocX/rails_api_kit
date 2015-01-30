@@ -17,19 +17,21 @@
 #   end
 #   ...
 # end
-module RailsApiKit::PolicyScopedAttributesSerializer
+module RailsApiKit
+  module PolicyScopedAttributesSerializer
 
-  def filter(keys)
-    keys = super(keys)
+    def filter(keys)
+      keys = super(keys)
 
-    policy_class = (self.class.name.underscore.sub(/_serializer$/,'_policy').classify.constantize rescue nil)
-    return keys unless policy_class
+      policy_class = (self.class.name.underscore.sub(/_serializer$/,'_policy').classify.constantize rescue nil)
+      return keys unless policy_class
 
-    policy = policy_class.new(scope.user, object)
-    return keys unless policy.respond_to? :readable_attributes
+      policy = policy_class.new(scope.user, object)
+      return keys unless policy.respond_to? :readable_attributes
 
-    # subset of keys vhere key is in readable_attributes
-    return keys - (keys - policy.readable_attributes(keys))
+      # subset of keys vhere key is in readable_attributes
+      return keys - (keys - policy.readable_attributes(keys))
+    end
+
   end
-
 end
